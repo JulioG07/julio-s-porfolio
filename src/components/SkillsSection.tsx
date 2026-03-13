@@ -7,13 +7,11 @@ const categories = [
     label: "Technical Skills",
     color: "primary",
     items: [
-      { name: "Java", level: 85 },
-      { name: "Python", level: 90 },
-      { name: "JavaScript", level: 80 },
-      { name: "HTML/CSS", level: 88 },
-      { name: "C++", level: 70 },
-      { name: "React", level: 78 },
-      { name: "TypeScript", level: 72 },
+      { name: "Java", level: "Advanced" },
+      { name: "Python", level: "Proficient" },
+      { name: "JavaScript", level: "Intermediate" },
+      { name: "HTML/CSS", level: "Proficient" },
+      { name: "C++", level: "Beginner" },
     ],
   },
   {
@@ -33,15 +31,22 @@ const categories = [
     color: "primary",
     items: [
       { name: "Coding Bootcamp Instructor", level: null },
-      { name: "Hackathon Team Lead", level: null },
-      { name: "Peer Tutor", level: null },
+      { name: "Curriculum Dev Intern – IB CS", level: null },
+      { name: "Communication Specialist", level: null },
     ],
   },
 ];
 
+const levelColors: Record<string, { bg: string; text: string; border: string }> = {
+  Advanced:     { bg: "bg-primary/10",    text: "text-primary",   border: "border-primary/25" },
+  Proficient:   { bg: "bg-secondary/10",  text: "text-secondary", border: "border-secondary/25" },
+  Intermediate: { bg: "bg-primary/8",     text: "text-primary",   border: "border-primary/20" },
+  Beginner:     { bg: "bg-muted",         text: "text-muted-foreground", border: "border-border" },
+};
+
 interface SkillItemProps {
   name: string;
-  level: number | null;
+  level: string | null;
   colorClass: { bg: string; bar: string; border: string; text: string };
   index: number;
 }
@@ -56,23 +61,23 @@ function SkillItem({ name, level, colorClass, index }: SkillItemProps) {
       className="group"
     >
       {level !== null ? (
-        <div>
-          <div className="flex items-center justify-between mb-1.5">
-            <span className="text-sm font-medium text-foreground">{name}</span>
-            <span className={`text-xs font-semibold ${colorClass.text}`}>{level}%</span>
-          </div>
-          <div className="h-1.5 bg-muted rounded-full overflow-hidden">
-            <motion.div
-              initial={{ width: 0 }}
-              whileInView={{ width: `${level}%` }}
-              viewport={{ once: true }}
-              transition={{ delay: index * 0.06 + 0.3, duration: 0.7, ease: "easeOut" }}
-              className={`h-full ${colorClass.bar} rounded-full`}
-            />
-          </div>
+        <div className="flex items-center justify-between gap-3">
+          <span className="text-sm font-medium text-foreground">{name}</span>
+          <span
+            className={`text-xs font-semibold px-2.5 py-0.5 rounded-full border
+              ${levelColors[level]?.bg ?? colorClass.bg}
+              ${levelColors[level]?.text ?? colorClass.text}
+              ${levelColors[level]?.border ?? colorClass.border}`}
+          >
+            {level}
+          </span>
         </div>
       ) : (
-        <div className={`flex items-center gap-2.5 px-3 py-2.5 rounded-xl border ${colorClass.border} ${colorClass.bg} group-hover:shadow-sm transition-all`}>
+        <div
+          className={`flex items-center gap-2.5 px-3 py-2.5 rounded-xl border
+            ${colorClass.border} ${colorClass.bg}
+            group-hover:shadow-sm transition-all`}
+        >
           <div className={`w-1.5 h-1.5 rounded-full ${colorClass.bar}`} />
           <span className="text-sm font-medium text-foreground">{name}</span>
         </div>
@@ -108,21 +113,22 @@ export function SkillsSection() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {categories.map((cat, ci) => {
             const Icon = cat.icon;
-            const colorClass = cat.color === "primary"
-              ? {
-                  bg: "bg-primary/8",
-                  border: "border-primary/20",
-                  text: "text-primary",
-                  bar: "bg-primary",
-                  iconBg: "bg-primary/8",
-                }
-              : {
-                  bg: "bg-secondary/8",
-                  border: "border-secondary/20",
-                  text: "text-secondary",
-                  bar: "bg-secondary",
-                  iconBg: "bg-secondary/8",
-                };
+            const colorClass =
+              cat.color === "primary"
+                ? {
+                    bg: "bg-primary/8",
+                    border: "border-primary/20",
+                    text: "text-primary",
+                    bar: "bg-primary",
+                    iconBg: "bg-primary/8",
+                  }
+                : {
+                    bg: "bg-secondary/8",
+                    border: "border-secondary/20",
+                    text: "text-secondary",
+                    bar: "bg-secondary",
+                    iconBg: "bg-secondary/8",
+                  };
 
             return (
               <motion.div
@@ -135,7 +141,9 @@ export function SkillsSection() {
               >
                 {/* Header */}
                 <div className="flex items-center gap-3 mb-6">
-                  <div className={`p-2.5 rounded-xl ${colorClass.iconBg} border ${colorClass.border}`}>
+                  <div
+                    className={`p-2.5 rounded-xl ${colorClass.iconBg} border ${colorClass.border}`}
+                  >
                     <Icon size={18} className={colorClass.text} />
                   </div>
                   <h3 className="font-semibold text-foreground">{cat.label}</h3>
