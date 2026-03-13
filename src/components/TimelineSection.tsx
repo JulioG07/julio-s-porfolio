@@ -1,5 +1,11 @@
-import { motion } from "framer-motion";
-import { Building2, Trophy, GraduationCap, Cpu, BookOpen, Briefcase } from "lucide-react";
+import { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { Building2, Trophy, GraduationCap, BookOpen, Briefcase } from "lucide-react";
+import logoSeo from "@/assets/logo-seo.jpeg";
+import logoLehigh from "@/assets/logo-lehigh.png";
+import logoBmhs from "@/assets/logo-bmhs.jpg";
+import logoTrackside from "@/assets/logo-trackside.png";
+import logoDurango from "@/assets/logo-durango.jpg";
 
 const events = [
   {
@@ -9,6 +15,7 @@ const events = [
       "Selected as 1 of 75 from 500+ applicants for SEO's competitive tech career development program. Developing Python skills through hands-on projects and Git collaborative workflows.",
     icon: Building2,
     color: "primary",
+    logo: logoSeo,
   },
   {
     year: "2025",
@@ -17,6 +24,7 @@ const events = [
       "Built Evento-AI in 24 hours at a hackathon sponsored by AWS & Lehigh CSBA — a serverless app using Gemini AI and AWS Lambda to convert GroupMe messages into Google Calendar events.",
     icon: Trophy,
     color: "secondary",
+    logo: logoLehigh,
   },
   {
     year: "2025",
@@ -25,6 +33,7 @@ const events = [
       "Enrolled in Lehigh's competitive Computer Science & Business Honors dual-degree track. Cumulative GPA: 3.84. Pursuing minors in Data Science and Entrepreneurship.",
     icon: GraduationCap,
     color: "primary",
+    logo: logoLehigh,
   },
   {
     year: "2025",
@@ -33,6 +42,7 @@ const events = [
       "Redesigned IB Computer Science HL lessons for Brien McMahon High School — creating interactive slide decks and logic gate demos on breadboards now used by 20–30 students.",
     icon: BookOpen,
     color: "secondary",
+    logo: logoBmhs,
   },
   {
     year: "2024",
@@ -41,6 +51,7 @@ const events = [
       "Organized and led a 4-day coding bootcamp teaching middle schoolers web development (HTML, CSS, JavaScript) using an interactive curriculum with Replit and coding games.",
     icon: BookOpen,
     color: "primary",
+    logo: logoTrackside,
   },
   {
     year: "2023–Present",
@@ -49,13 +60,37 @@ const events = [
       "Manage communication with 100+ clients weekly. Improved customer engagement and reduced policy cancellations by increasing follow-up calls and documenting all client interactions.",
     icon: Briefcase,
     color: "secondary",
+    logo: logoDurango,
   },
 ];
 
 export function TimelineSection() {
+  const [hoveredLogo, setHoveredLogo] = useState<string | null>(null);
+
   return (
-    <section id="timeline" className="py-24 bg-muted/20">
-      <div className="section-container">
+    <section id="timeline" className="py-24 bg-muted/20 relative overflow-hidden">
+      {/* Background logo ghost — fades in on card hover */}
+      <AnimatePresence mode="wait">
+        {hoveredLogo && (
+          <motion.div
+            key={hoveredLogo}
+            initial={{ opacity: 0, scale: 1.05 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.97 }}
+            transition={{ duration: 0.4, ease: "easeInOut" }}
+            className="absolute inset-0 flex items-center justify-center pointer-events-none z-0"
+          >
+            <img
+              src={hoveredLogo}
+              alt=""
+              className="max-w-[40vw] max-h-[40vh] object-contain select-none"
+              style={{ opacity: 0.08, filter: "grayscale(60%)" }}
+            />
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      <div className="section-container relative z-10">
         {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -116,13 +151,15 @@ export function TimelineSection() {
                   {/* Card */}
                   <div
                     className={`ml-10 md:ml-0 ${isLeft ? "md:mr-[calc(50%+20px)]" : "md:ml-[calc(50%+20px)]"} max-w-sm w-full`}
+                    onMouseEnter={() => setHoveredLogo(event.logo)}
+                    onMouseLeave={() => setHoveredLogo(null)}
                   >
                     <div
-                      className={`bg-card border ${colorClass.border} rounded-2xl p-5 shadow-card hover:shadow-card-hover transition-all duration-300 group`}
+                      className={`bg-card border ${colorClass.border} rounded-2xl p-5 shadow-card hover:shadow-card-hover transition-all duration-300 group hover:scale-[1.02]`}
                     >
                       <div className="flex items-start gap-3 mb-3">
                         <div
-                          className={`p-2 rounded-xl ${colorClass.bg} border ${colorClass.border}`}
+                          className={`p-2 rounded-xl ${colorClass.bg} border ${colorClass.border} transition-transform duration-300 group-hover:scale-110`}
                         >
                           <Icon size={16} className={colorClass.text} />
                         </div>

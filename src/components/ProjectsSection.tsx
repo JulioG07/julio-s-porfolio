@@ -52,13 +52,16 @@ export function ProjectsSection() {
   const displayCards = projects.map((project, i) => {
     const Icon = project.icon;
     const isSecondary = project.color === "secondary";
-    const stackOffset = i === 0
-      ? "[grid-area:stack] hover:-translate-y-10 before:absolute before:w-[100%] before:outline-1 before:rounded-xl before:outline-border before:h-[100%] before:content-[''] before:bg-blend-overlay before:bg-background/50 grayscale-[100%] hover:before:opacity-0 before:transition-opacity before:duration-700 hover:grayscale-0 before:left-0 before:top-0"
-      : i === 1
-      ? "[grid-area:stack] translate-x-12 translate-y-10 hover:-translate-y-1 before:absolute before:w-[100%] before:outline-1 before:rounded-xl before:outline-border before:h-[100%] before:content-[''] before:bg-blend-overlay before:bg-background/50 grayscale-[100%] hover:before:opacity-0 before:transition-opacity before:duration-700 hover:grayscale-0 before:left-0 before:top-0"
-      : i === 2
-      ? "[grid-area:stack] translate-x-24 translate-y-20 hover:-translate-y-1 before:absolute before:w-[100%] before:outline-1 before:rounded-xl before:outline-border before:h-[100%] before:content-[''] before:bg-blend-overlay before:bg-background/50 grayscale-[100%] hover:before:opacity-0 before:transition-opacity before:duration-700 hover:grayscale-0 before:left-0 before:top-0"
-      : "[grid-area:stack] translate-x-36 translate-y-[120px] hover:translate-y-[100px]";
+
+    // Stack positioning — increase lift amount so underlying cards are visible
+    const stackOffset =
+      i === 0
+        ? "[grid-area:stack] hover:-translate-y-[140px] before:absolute before:w-[100%] before:outline-1 before:rounded-xl before:outline-border before:h-[100%] before:content-[''] before:bg-blend-overlay before:bg-background/50 grayscale-[100%] hover:before:opacity-0 before:transition-opacity before:duration-700 hover:grayscale-0 before:left-0 before:top-0 transition-all duration-500"
+        : i === 1
+        ? "[grid-area:stack] translate-x-10 translate-y-10 hover:-translate-y-[40px] hover:translate-x-10 before:absolute before:w-[100%] before:outline-1 before:rounded-xl before:outline-border before:h-[100%] before:content-[''] before:bg-blend-overlay before:bg-background/50 grayscale-[100%] hover:before:opacity-0 before:transition-opacity before:duration-700 hover:grayscale-0 before:left-0 before:top-0 transition-all duration-500"
+        : i === 2
+        ? "[grid-area:stack] translate-x-20 translate-y-20 hover:translate-y-[10px] hover:translate-x-20 before:absolute before:w-[100%] before:outline-1 before:rounded-xl before:outline-border before:h-[100%] before:content-[''] before:bg-blend-overlay before:bg-background/50 grayscale-[100%] hover:before:opacity-0 before:transition-opacity before:duration-700 hover:grayscale-0 before:left-0 before:top-0 transition-all duration-500"
+        : "[grid-area:stack] translate-x-[120px] translate-y-[120px] hover:translate-y-[60px] hover:translate-x-[120px] transition-all duration-500";
 
     return {
       className: stackOffset,
@@ -81,7 +84,7 @@ export function ProjectsSection() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
-          className="mb-14"
+          className="mb-16"
         >
           <p className="text-sm font-semibold text-primary uppercase tracking-widest mb-3">
             Work
@@ -94,64 +97,30 @@ export function ProjectsSection() {
           </p>
         </motion.div>
 
-        {/* DisplayCards layout */}
-        <div className="flex flex-col lg:flex-row items-start lg:items-center gap-16">
-          {/* Stacked cards */}
-          <motion.div
-            initial={{ opacity: 0, x: -24 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.7 }}
-            className="flex-shrink-0 w-full lg:w-auto flex justify-center"
-          >
-            <div className="relative" style={{ height: "280px", width: "400px" }}>
-              <DisplayCards cards={displayCards} />
-            </div>
-          </motion.div>
-
-          {/* Project list (right side) */}
-          <div className="flex flex-col gap-4 w-full">
-            {projects.map((project, i) => {
-              const Icon = project.icon;
-              const isSecondary = project.color === "secondary";
-              const colorClass = isSecondary
-                ? { bg: "bg-secondary/8", border: "border-secondary/20", text: "text-secondary", iconBg: "bg-secondary/10" }
-                : { bg: "bg-primary/8", border: "border-primary/20", text: "text-primary", iconBg: "bg-primary/10" };
-
-              return (
-                <motion.div
-                  key={project.title}
-                  initial={{ opacity: 0, x: 24 }}
-                  whileInView={{ opacity: 1, x: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: i * 0.08, duration: 0.5 }}
-                  whileHover={{ x: 4, transition: { duration: 0.2 } }}
-                  className={`group flex items-start gap-4 bg-card border ${colorClass.border} rounded-2xl p-4 shadow-card hover:shadow-card-hover transition-all duration-300 cursor-default`}
-                >
-                  <div className={`p-2.5 rounded-xl ${colorClass.iconBg} border ${colorClass.border} flex-shrink-0`}>
-                    <Icon size={18} className={colorClass.text} />
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-2 mb-1">
-                      <h3 className="text-sm font-semibold text-foreground">{project.title}</h3>
-                      <span className={`text-xs font-medium px-2 py-0.5 rounded-full border ${colorClass.bg} ${colorClass.text} ${colorClass.border}`}>
-                        {project.tag}
-                      </span>
-                    </div>
-                    <p className="text-xs text-muted-foreground leading-relaxed mb-2">
-                      {project.description}
-                    </p>
-                    <div className="flex flex-wrap gap-1.5">
-                      {project.tech.map((t) => (
-                        <span key={t} className="tech-tag">{t}</span>
-                      ))}
-                    </div>
-                  </div>
-                </motion.div>
-              );
-            })}
+        {/* Centered DisplayCards stack */}
+        <motion.div
+          initial={{ opacity: 0, y: 28 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.7 }}
+          className="flex justify-center"
+        >
+          {/* Extra height so the lifted cards have room */}
+          <div className="relative" style={{ height: "380px", width: "500px" }}>
+            <DisplayCards cards={displayCards} />
           </div>
-        </div>
+        </motion.div>
+
+        {/* Hint text */}
+        <motion.p
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true }}
+          transition={{ delay: 0.4, duration: 0.6 }}
+          className="text-center text-xs text-muted-foreground/60 mt-6 font-mono"
+        >
+          hover each card to explore
+        </motion.p>
       </div>
     </section>
   );
