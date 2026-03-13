@@ -11,6 +11,8 @@ interface DisplayCardProps {
   iconClassName?: string;
   titleClassName?: string;
   tech?: string[];
+  onHover?: () => void;
+  onLeave?: () => void;
 }
 
 function DisplayCard({
