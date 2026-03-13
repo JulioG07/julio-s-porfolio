@@ -1,13 +1,12 @@
 import { useRef, useEffect, useState, useCallback } from "react";
+import profilePic from "@/assets/profilepic.png";
 
 interface Node {
   id: string;
   x: number;
   y: number;
-  // home position for primary nodes
   homeX: number;
   homeY: number;
-  // organic drift offset
   driftAngle: number;
   driftSpeed: number;
   driftRadius: number;
@@ -25,8 +24,8 @@ interface NodeNetworkProps {
   onNodeClick?: (section: string) => void;
 }
 
-const PRIMARY_COLOR   = "59, 130, 246";   // --primary  #3B82F6
-const SECONDARY_COLOR = "20, 184, 166";   // --secondary #14B8A6
+const PRIMARY_COLOR   = "59, 130, 246";
+const SECONDARY_COLOR = "20, 184, 166";
 
 const SECTION_NODES = [
   { id: "projects", label: "Projects", section: "#projects" },
@@ -36,12 +35,15 @@ const SECTION_NODES = [
   { id: "contact",  label: "Contact",  section: "#contact"  },
 ];
 
-const AMBIENT_LABELS = ["AI", "Python", "Systems", "Product", "IoT"];
+const AMBIENT_LABELS = [
+  "Python", "Java", "JavaScript", "HTML/CSS", "C++",
+  "AI", "Product", "Systems", "IoT", "APIs", "Cloud", "Hackathons",
+];
 
 function createNodes(width: number, height: number): Node[] {
   const cx = width / 2;
   const cy = height / 2;
-  const r  = Math.min(width, height) * 0.32;
+  const r  = Math.min(width, height) * 0.3;
   const nodes: Node[] = [];
 
   // Center node
@@ -51,7 +53,7 @@ function createNodes(width: number, height: number): Node[] {
     homeX: cx, homeY: cy,
     driftAngle: 0, driftSpeed: 0, driftRadius: 0,
     vx: 0, vy: 0,
-    radius: 32,
+    radius: 34,
     label: "JG",
     type: "center",
     color: PRIMARY_COLOR,
@@ -80,21 +82,24 @@ function createNodes(width: number, height: number): Node[] {
     });
   });
 
-  // Ambient nodes — between primary nodes
+  // Ambient nodes — two rings at varying distances
   AMBIENT_LABELS.forEach((label, i) => {
-    const angle = (i / AMBIENT_LABELS.length) * Math.PI * 2 + Math.PI / 6;
-    const dist  = r * 0.5 + Math.random() * r * 0.18;
-    const hx = cx + Math.cos(angle) * dist;
-    const hy = cy + Math.sin(angle) * dist;
+    // Alternate between an inner and outer ring for visual depth
+    const ringRadius = i % 2 === 0
+      ? r * 0.55 + Math.random() * r * 0.12
+      : r * 0.78 + Math.random() * r * 0.18;
+    const angle = (i / AMBIENT_LABELS.length) * Math.PI * 2 + Math.PI / 8;
+    const hx = cx + Math.cos(angle) * ringRadius;
+    const hy = cy + Math.sin(angle) * ringRadius;
     nodes.push({
       id: `ambient-${i}`,
       x: hx, y: hy,
       homeX: hx, homeY: hy,
       driftAngle: Math.random() * Math.PI * 2,
-      driftSpeed: 0.006 + Math.random() * 0.005,
-      driftRadius: 12 + Math.random() * 10,
+      driftSpeed: 0.005 + Math.random() * 0.005,
+      driftRadius: 10 + Math.random() * 14,
       vx: 0, vy: 0,
-      radius: 10,
+      radius: 9,
       label,
       type: "ambient",
       color: SECONDARY_COLOR,
@@ -112,12 +117,17 @@ export function NodeNetwork({ onNodeClick }: NodeNetworkProps) {
   const mouseRef     = useRef({ x: -9999, y: -9999, active: false });
   const hoveredRef   = useRef<string | null>(null);
   const tickRef      = useRef<number>(0);
+  const profileImgRef = useRef<HTMLImageElement | null>(null);
 
-  const [hoveredLabel, setHoveredLabel] = useState<{
-    label: string; x: number; y: number;
-  } | null>(null);
-  const [size, setSize] = useState({ w: 600, h: 500 });
+  const [size, setSize] = useState({ w: 800, h: 500 });
   const containerRef = useRef<HTMLDivElement>(null);
+
+  // Pre-load profile image
+  useEffect(() => {
+    const img = new Image();
+    img.src = profilePic;
+    img.onload = () => { profileImgRef.current = img; };
+  }, []);
 
   const resize = useCallback(() => {
     if (!containerRef.current) return;
@@ -157,37 +167,32 @@ export function NodeNetwork({ onNodeClick }: NodeNetworkProps) {
       nodes.forEach((node) => {
         if (node.type === "center") return;
 
-        // Advance organic drift angle
         node.driftAngle += node.driftSpeed;
 
-        // Drift target = home + sine wave offset
         const driftX = node.homeX + Math.cos(node.driftAngle) * node.driftRadius;
         const driftY = node.homeY + Math.sin(node.driftAngle * 0.7) * node.driftRadius;
 
-        // Soft spring toward drift target
         node.vx += (driftX - node.x) * 0.018;
         node.vy += (driftY - node.y) * 0.018;
 
-        // Soft magnetic cursor pull/push
+        // Soft magnetic cursor effect
         if (mouse.active) {
           const dx   = node.x - mouse.x;
           const dy   = node.y - mouse.y;
           const dist = Math.sqrt(dx * dx + dy * dy);
-          const zone = node.type === "primary" ? 100 : 80;
+          const zone = node.type === "primary" ? 110 : 85;
           if (dist < zone && dist > 0) {
-            const strength = (1 - dist / zone) * 0.04;
+            const strength = (1 - dist / zone) * 0.035;
             node.vx += (dx / dist) * strength;
             node.vy += (dy / dist) * strength;
           }
         }
 
-        // Damping — keeps motion smooth, not jittery
         node.vx *= 0.88;
         node.vy *= 0.88;
         node.x  += node.vx;
         node.y  += node.vy;
 
-        // Soft boundary clamp (no hard bounce)
         const pad = node.radius + 10;
         if (node.x < pad)           node.vx += (pad - node.x) * 0.05;
         if (node.x > size.w - pad)  node.vx += (size.w - pad - node.x) * 0.05;
@@ -196,7 +201,6 @@ export function NodeNetwork({ onNodeClick }: NodeNetworkProps) {
       });
 
       // Draw connections
-      const center = nodes[0];
       nodes.forEach((a) => {
         nodes.forEach((b) => {
           if (a.id >= b.id) return;
@@ -205,15 +209,15 @@ export function NodeNetwork({ onNodeClick }: NodeNetworkProps) {
           const dist = Math.sqrt(dx * dx + dy * dy);
 
           const maxDist =
-            a.type === "center" || b.type === "center" ? 280
-            : a.type === "primary" && b.type === "primary" ? 200
-            : 150;
+            a.type === "center" || b.type === "center" ? 300
+            : a.type === "primary" && b.type === "primary" ? 220
+            : 160;
           if (dist > maxDist) return;
 
           const isHighlighted =
             hoveredRef.current === a.id || hoveredRef.current === b.id;
-          const baseAlpha = (1 - dist / maxDist) * 0.3;
-          const alpha     = isHighlighted ? baseAlpha * 3 : baseAlpha;
+          const baseAlpha = (1 - dist / maxDist) * 0.28;
+          const alpha     = isHighlighted ? Math.min(baseAlpha * 3.5, 0.85) : baseAlpha;
 
           const c1 = a.type === "center" || a.type === "primary" ? PRIMARY_COLOR : SECONDARY_COLOR;
           const c2 = b.type === "center" || b.type === "primary" ? PRIMARY_COLOR : SECONDARY_COLOR;
@@ -226,7 +230,7 @@ export function NodeNetwork({ onNodeClick }: NodeNetworkProps) {
           ctx.moveTo(a.x, a.y);
           ctx.lineTo(b.x, b.y);
           ctx.strokeStyle = grad;
-          ctx.lineWidth   = isHighlighted ? 1.5 : 0.8;
+          ctx.lineWidth   = isHighlighted ? 1.5 : 0.7;
           ctx.stroke();
         });
       });
@@ -240,7 +244,7 @@ export function NodeNetwork({ onNodeClick }: NodeNetworkProps) {
         // Glow
         const glowActive = isHovered || node.type === "center";
         if (glowActive) {
-          const glowSize = node.type === "center" ? 44 : 22;
+          const glowSize = node.type === "center" ? 48 : 24;
           const glow = ctx.createRadialGradient(
             node.x, node.y, 0,
             node.x, node.y, nr + glowSize
@@ -253,17 +257,17 @@ export function NodeNetwork({ onNodeClick }: NodeNetworkProps) {
           ctx.fill();
         }
 
-        // Persistent soft pulse on center node
+        // Persistent pulse on center node
         if (node.type === "center") {
           const pulse = (Math.sin(tickRef.current * 0.025) * 0.5 + 0.5) * 0.12 + 0.06;
           const pulseGrad = ctx.createRadialGradient(
             node.x, node.y, nr,
-            node.x, node.y, nr + 28
+            node.x, node.y, nr + 30
           );
           pulseGrad.addColorStop(0, `rgba(${PRIMARY_COLOR}, ${pulse})`);
           pulseGrad.addColorStop(1, `rgba(${PRIMARY_COLOR}, 0)`);
           ctx.beginPath();
-          ctx.arc(node.x, node.y, nr + 28, 0, Math.PI * 2);
+          ctx.arc(node.x, node.y, nr + 30, 0, Math.PI * 2);
           ctx.fillStyle = pulseGrad;
           ctx.fill();
         }
@@ -280,8 +284,8 @@ export function NodeNetwork({ onNodeClick }: NodeNetworkProps) {
           grad.addColorStop(0, `rgba(${PRIMARY_COLOR}, ${isHovered ? 1 : 0.88})`);
           grad.addColorStop(1, `rgba(${PRIMARY_COLOR}, ${isHovered ? 0.9 : 0.72})`);
         } else {
-          grad.addColorStop(0, `rgba(${SECONDARY_COLOR}, 0.55)`);
-          grad.addColorStop(1, `rgba(${SECONDARY_COLOR}, 0.3)`);
+          grad.addColorStop(0, `rgba(${SECONDARY_COLOR}, 0.5)`);
+          grad.addColorStop(1, `rgba(${SECONDARY_COLOR}, 0.28)`);
         }
 
         ctx.beginPath();
@@ -294,13 +298,36 @@ export function NodeNetwork({ onNodeClick }: NodeNetworkProps) {
         ctx.arc(node.x, node.y, nr, 0, Math.PI * 2);
         ctx.strokeStyle =
           node.type === "ambient"
-            ? `rgba(${SECONDARY_COLOR}, 0.4)`
-            : `rgba(${PRIMARY_COLOR}, ${isHovered ? 0.95 : 0.55})`;
+            ? `rgba(${SECONDARY_COLOR}, 0.35)`
+            : `rgba(${PRIMARY_COLOR}, ${isHovered ? 0.95 : 0.5})`;
         ctx.lineWidth = node.type === "center" ? 2.5 : 1.5;
         ctx.stroke();
 
-        // Label inside center node
-        if (node.type === "center") {
+        // Center node: draw circular profile photo
+        if (node.type === "center" && profileImgRef.current) {
+          ctx.save();
+          ctx.beginPath();
+          ctx.arc(node.x, node.y, nr - 3, 0, Math.PI * 2);
+          ctx.clip();
+          ctx.drawImage(
+            profileImgRef.current,
+            node.x - (nr - 3),
+            node.y - (nr - 3),
+            (nr - 3) * 2,
+            (nr - 3) * 2
+          );
+          ctx.restore();
+
+          // Subtle overlay so the node still reads as a "node"
+          const overlay = ctx.createRadialGradient(node.x, node.y, 0, node.x, node.y, nr);
+          overlay.addColorStop(0, `rgba(${PRIMARY_COLOR}, 0.08)`);
+          overlay.addColorStop(1, `rgba(${PRIMARY_COLOR}, 0.32)`);
+          ctx.beginPath();
+          ctx.arc(node.x, node.y, nr - 3, 0, Math.PI * 2);
+          ctx.fillStyle = overlay;
+          ctx.fill();
+        } else if (node.type === "center") {
+          // Fallback text label
           ctx.fillStyle    = "rgba(255,255,255,0.97)";
           ctx.font         = "bold 14px Inter, system-ui, sans-serif";
           ctx.textAlign    = "center";
@@ -312,15 +339,14 @@ export function NodeNetwork({ onNodeClick }: NodeNetworkProps) {
         if (node.type === "primary" || node.type === "ambient") {
           ctx.fillStyle =
             node.type === "primary"
-              ? `rgba(17,17,17,${isHovered ? 1 : 0.75})`
-              : `rgba(107,114,128,0.75)`;
-          ctx.font =
-            `${node.type === "primary" ? (isHovered ? "600" : "500") : "400"} ${
-              node.type === "primary" ? "12px" : "10px"
-            } Inter, system-ui, sans-serif`;
+              ? `rgba(17,17,17,${isHovered ? 1 : 0.72})`
+              : `rgba(107,114,128,0.65)`;
+          ctx.font = `${node.type === "primary" ? (isHovered ? "600" : "500") : "400"} ${
+            node.type === "primary" ? "12px" : "10px"
+          } Inter, system-ui, sans-serif`;
           ctx.textAlign    = "center";
           ctx.textBaseline = "top";
-          ctx.fillText(node.label, node.x, node.y + nr + 5);
+          ctx.fillText(node.label, node.x, node.y + nr + 4);
         }
       });
 
@@ -333,11 +359,10 @@ export function NodeNetwork({ onNodeClick }: NodeNetworkProps) {
   }, [size]);
 
   const getHoveredNode = useCallback((cx: number, cy: number): Node | null => {
-    const nodes = nodesRef.current;
-    for (const node of nodes) {
+    for (const node of nodesRef.current) {
       const dx  = node.x - cx;
       const dy  = node.y - cy;
-      const hit = node.radius * 1.6;
+      const hit = node.radius * 1.7;
       if (Math.sqrt(dx * dx + dy * dy) <= hit) return node;
     }
     return null;
@@ -354,10 +379,8 @@ export function NodeNetwork({ onNodeClick }: NodeNetworkProps) {
       hoveredRef.current = node?.id ?? null;
 
       if (node && (node.type === "primary" || node.type === "center")) {
-        setHoveredLabel({ label: node.label, x: node.x, y: node.y - node.radius - 14 });
         e.currentTarget.style.cursor = "pointer";
       } else {
-        setHoveredLabel(null);
         e.currentTarget.style.cursor = "default";
       }
     },
@@ -367,7 +390,6 @@ export function NodeNetwork({ onNodeClick }: NodeNetworkProps) {
   const handleMouseLeave = useCallback(() => {
     mouseRef.current = { x: -9999, y: -9999, active: false };
     hoveredRef.current = null;
-    setHoveredLabel(null);
   }, []);
 
   const handleClick = useCallback(
@@ -387,21 +409,11 @@ export function NodeNetwork({ onNodeClick }: NodeNetworkProps) {
     <div ref={containerRef} className="relative w-full h-full select-none">
       <canvas
         ref={canvasRef}
-        style={{ width: "100%", height: "100%" }}
+        style={{ width: "100%", height: "100%", display: "block" }}
         onMouseMove={handleMouseMove}
         onMouseLeave={handleMouseLeave}
         onClick={handleClick}
       />
-      {/* Tooltip */}
-      {hoveredLabel && (
-        <div
-          className="pointer-events-none absolute bg-foreground text-primary-foreground text-xs font-medium px-2.5 py-1 rounded-md shadow-lg translate-x-[-50%] translate-y-[-100%] whitespace-nowrap transition-all duration-150"
-          style={{ left: hoveredLabel.x, top: hoveredLabel.y }}
-        >
-          {hoveredLabel.label}
-          <div className="absolute left-1/2 -bottom-1 -translate-x-1/2 w-2 h-2 bg-foreground rotate-45" />
-        </div>
-      )}
     </div>
   );
 }
