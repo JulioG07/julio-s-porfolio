@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Zap, Inbox, Calculator, DollarSign, ArrowRight } from "lucide-react";
 import DisplayCards from "@/components/ui/display-cards";
@@ -52,21 +52,38 @@ const secondaryColor = "text-secondary";
 
 export function ProjectsSection() {
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
+  // Track whether the cursor is in the cards zone or the detail panel
+  const leaveTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const handleCardEnter = (i: number) => {
+    if (leaveTimerRef.current) clearTimeout(leaveTimerRef.current);
+    setHoveredIndex(i);
+  };
+
+  // Small delay before clearing so cursor can cross the gap to the detail panel
+  const handleAreaLeave = () => {
+    leaveTimerRef.current = setTimeout(() => {
+      setHoveredIndex(null);
+    }, 120);
+  };
+
+  const handlePanelEnter = () => {
+    if (leaveTimerRef.current) clearTimeout(leaveTimerRef.current);
+  };
 
   const displayCards = projects.map((project, i) => {
     const Icon = project.icon;
     const isSecondary = project.color === "secondary";
 
-    // Each card lifts significantly to reveal the one beneath it
-    // Offset increases by ~45px per card depth; lift clears ~130-150px
+    // Increased vertical offset (20px per step) for more breathing room between cards
     const stackOffset =
       i === 0
-        ? "[grid-area:stack] hover:-translate-y-[160px] before:absolute before:w-[100%] before:outline-1 before:rounded-xl before:outline-border before:h-[100%] before:content-[''] before:bg-blend-overlay before:bg-background/50 grayscale-[100%] hover:before:opacity-0 before:transition-opacity before:duration-700 hover:grayscale-0 before:left-0 before:top-0 transition-all duration-500 cursor-pointer"
+        ? "[grid-area:stack] hover:-translate-y-[170px] before:absolute before:w-[100%] before:outline-1 before:rounded-xl before:outline-border before:h-[100%] before:content-[''] before:bg-blend-overlay before:bg-background/50 grayscale-[100%] hover:before:opacity-0 before:transition-opacity before:duration-700 hover:grayscale-0 before:left-0 before:top-0 transition-all duration-500 cursor-pointer"
         : i === 1
-        ? "[grid-area:stack] translate-x-[14px] translate-y-[14px] hover:-translate-y-[146px] hover:translate-x-[14px] before:absolute before:w-[100%] before:outline-1 before:rounded-xl before:outline-border before:h-[100%] before:content-[''] before:bg-blend-overlay before:bg-background/50 grayscale-[100%] hover:before:opacity-0 before:transition-opacity before:duration-700 hover:grayscale-0 before:left-0 before:top-0 transition-all duration-500 cursor-pointer"
+        ? "[grid-area:stack] translate-x-[14px] translate-y-[20px] hover:-translate-y-[150px] hover:translate-x-[14px] before:absolute before:w-[100%] before:outline-1 before:rounded-xl before:outline-border before:h-[100%] before:content-[''] before:bg-blend-overlay before:bg-background/50 grayscale-[100%] hover:before:opacity-0 before:transition-opacity before:duration-700 hover:grayscale-0 before:left-0 before:top-0 transition-all duration-500 cursor-pointer"
         : i === 2
-        ? "[grid-area:stack] translate-x-[28px] translate-y-[28px] hover:-translate-y-[132px] hover:translate-x-[28px] before:absolute before:w-[100%] before:outline-1 before:rounded-xl before:outline-border before:h-[100%] before:content-[''] before:bg-blend-overlay before:bg-background/50 grayscale-[100%] hover:before:opacity-0 before:transition-opacity before:duration-700 hover:grayscale-0 before:left-0 before:top-0 transition-all duration-500 cursor-pointer"
-        : "[grid-area:stack] translate-x-[42px] translate-y-[42px] hover:-translate-y-[118px] hover:translate-x-[42px] before:absolute before:w-[100%] before:outline-1 before:rounded-xl before:outline-border before:h-[100%] before:content-[''] before:bg-blend-overlay before:bg-background/50 grayscale-[100%] hover:before:opacity-0 before:transition-opacity before:duration-700 hover:grayscale-0 before:left-0 before:top-0 transition-all duration-500 cursor-pointer";
+        ? "[grid-area:stack] translate-x-[28px] translate-y-[40px] hover:-translate-y-[130px] hover:translate-x-[28px] before:absolute before:w-[100%] before:outline-1 before:rounded-xl before:outline-border before:h-[100%] before:content-[''] before:bg-blend-overlay before:bg-background/50 grayscale-[100%] hover:before:opacity-0 before:transition-opacity before:duration-700 hover:grayscale-0 before:left-0 before:top-0 transition-all duration-500 cursor-pointer"
+        : "[grid-area:stack] translate-x-[42px] translate-y-[60px] hover:-translate-y-[110px] hover:translate-x-[42px] before:absolute before:w-[100%] before:outline-1 before:rounded-xl before:outline-border before:h-[100%] before:content-[''] before:bg-blend-overlay before:bg-background/50 grayscale-[100%] hover:before:opacity-0 before:transition-opacity before:duration-700 hover:grayscale-0 before:left-0 before:top-0 transition-all duration-500 cursor-pointer";
 
     return {
       className: stackOffset,
@@ -77,8 +94,8 @@ export function ProjectsSection() {
       tech: project.tech,
       iconClassName: isSecondary ? secondaryColor : primaryColor,
       titleClassName: isSecondary ? secondaryColor : primaryColor,
-      onHover: () => setHoveredIndex(i),
-      onLeave: () => setHoveredIndex(null),
+      onHover: () => handleCardEnter(i),
+      onLeave: handleAreaLeave,
     };
   });
 
@@ -107,18 +124,19 @@ export function ProjectsSection() {
         </motion.div>
 
         {/* Two-column layout: cards left, detail panel right */}
-        <div className="flex flex-col lg:flex-row items-start gap-12 lg:gap-16">
+        <div className="flex flex-col lg:flex-row items-start gap-0 lg:gap-0">
 
-          {/* Left — stacked DisplayCards */}
+          {/* Left — stacked DisplayCards + invisible hover bridge */}
           <motion.div
             initial={{ opacity: 0, y: 28 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.7 }}
             className="flex-shrink-0"
+            onMouseLeave={handleAreaLeave}
           >
-            {/* Extra height so lifted cards have room */}
-            <div className="relative" style={{ height: "420px", width: "380px" }}>
+            {/* Extra height so lifted cards have room; increased for wider spacing */}
+            <div className="relative" style={{ height: "460px", width: "400px" }}>
               <DisplayCards cards={displayCards} />
             </div>
             <p className="text-xs text-muted-foreground/50 mt-3 font-mono text-center">
@@ -126,16 +144,20 @@ export function ProjectsSection() {
             </p>
           </motion.div>
 
-          {/* Right — project detail panel */}
-          <div className="flex-1 min-h-[360px] flex items-center">
+          {/* Right — project detail panel, stays active while cursor is inside */}
+          <div
+            className="flex-1 min-h-[400px] flex items-center pl-10 lg:pl-14"
+            onMouseEnter={handlePanelEnter}
+            onMouseLeave={handleAreaLeave}
+          >
             <AnimatePresence mode="wait">
               {activeProject ? (
                 <motion.div
                   key={activeProject.title}
-                  initial={{ opacity: 0, x: 24 }}
+                  initial={{ opacity: 0, x: 32 }}
                   animate={{ opacity: 1, x: 0 }}
-                  exit={{ opacity: 0, x: 16 }}
-                  transition={{ duration: 0.35, ease: "easeOut" }}
+                  exit={{ opacity: 0, x: 20 }}
+                  transition={{ duration: 0.4, ease: [0.25, 0.46, 0.45, 0.94] }}
                   className="w-full"
                 >
                   {/* Image area */}
