@@ -46,21 +46,21 @@ function createNodes(width: number, height: number): Node[] {
   const r  = Math.min(width, height) * 0.3;
   const nodes: Node[] = [];
 
-  // Center node
+  // Center node — largest, dominant
   nodes.push({
     id: "center",
     x: cx, y: cy,
     homeX: cx, homeY: cy,
     driftAngle: 0, driftSpeed: 0, driftRadius: 0,
     vx: 0, vy: 0,
-    radius: 34,
+    radius: 40,  // slightly bigger than primary nodes
     label: "JG",
     type: "center",
     color: PRIMARY_COLOR,
     glowColor: PRIMARY_COLOR,
   });
 
-  // Primary section nodes — circle arrangement
+  // Primary section nodes — +15-20% vs old 20px → 24px
   SECTION_NODES.forEach((s, i) => {
     const angle = (i / SECTION_NODES.length) * Math.PI * 2 - Math.PI / 2;
     const hx = cx + Math.cos(angle) * r;
@@ -73,7 +73,7 @@ function createNodes(width: number, height: number): Node[] {
       driftSpeed: 0.004 + Math.random() * 0.003,
       driftRadius: 8 + Math.random() * 8,
       vx: 0, vy: 0,
-      radius: 20,
+      radius: 24,  // was 20
       label: s.label,
       type: "primary",
       section: s.section,
@@ -82,9 +82,8 @@ function createNodes(width: number, height: number): Node[] {
     });
   });
 
-  // Ambient nodes — two rings at varying distances
+  // Ambient nodes — +10% vs old 9px → 10px
   AMBIENT_LABELS.forEach((label, i) => {
-    // Alternate between an inner and outer ring for visual depth
     const ringRadius = i % 2 === 0
       ? r * 0.55 + Math.random() * r * 0.12
       : r * 0.78 + Math.random() * r * 0.18;
@@ -99,7 +98,7 @@ function createNodes(width: number, height: number): Node[] {
       driftSpeed: 0.005 + Math.random() * 0.005,
       driftRadius: 10 + Math.random() * 14,
       vx: 0, vy: 0,
-      radius: 9,
+      radius: 10,  // was 9
       label,
       type: "ambient",
       color: SECONDARY_COLOR,

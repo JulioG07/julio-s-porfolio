@@ -11,6 +11,8 @@ interface DisplayCardProps {
   iconClassName?: string;
   titleClassName?: string;
   tech?: string[];
+  onHover?: () => void;
+  onLeave?: () => void;
 }
 
 function DisplayCard({
@@ -22,9 +24,13 @@ function DisplayCard({
   iconClassName = "text-primary",
   titleClassName = "text-primary",
   tech = [],
+  onHover,
+  onLeave,
 }: DisplayCardProps) {
   return (
     <div
+      onMouseEnter={onHover}
+      onMouseLeave={onLeave}
       className={cn(
         "relative flex h-44 w-[22rem] select-none flex-col justify-between rounded-xl border border-border bg-card p-5 shadow-card transition-all duration-500",
         "[&>*]:flex [&>*]:items-center [&>*]:gap-2",
