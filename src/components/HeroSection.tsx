@@ -23,16 +23,22 @@ export function HeroSection({ onScrollTo }: HeroSectionProps) {
         }}
       />
 
-      <div className="section-container w-full py-20">
+      {/* Full-bleed node network sits behind content */}
+      <div className="absolute inset-0 pointer-events-none">
+        <NodeNetwork onNodeClick={onScrollTo} />
+      </div>
+
+      {/* Foreground content layer */}
+      <div className="relative z-10 section-container w-full py-20 pointer-events-none">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
-          {/* Left — text */}
-          <div className="flex flex-col gap-6">
+          {/* Left — text (re-enable pointer events for interactive elements) */}
+          <div className="flex flex-col gap-6 pointer-events-auto">
             {/* Badge */}
             <motion.div
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.1, duration: 0.5 }}
-              className="inline-flex w-fit items-center gap-2 px-3 py-1.5 rounded-full border border-border bg-card text-xs font-medium text-muted-foreground"
+              className="inline-flex w-fit items-center gap-2 px-3 py-1.5 rounded-full border border-border bg-card/80 backdrop-blur-sm text-xs font-medium text-muted-foreground"
             >
               <span className="w-1.5 h-1.5 rounded-full bg-secondary animate-pulse" />
               Open to SWE & PM Internships
@@ -81,20 +87,24 @@ export function HeroSection({ onScrollTo }: HeroSectionProps) {
               transition={{ delay: 0.5, duration: 0.6 }}
               className="flex flex-wrap gap-3"
             >
-              <button
+              <motion.button
                 onClick={() => onScrollTo("#projects")}
-                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-primary text-primary-foreground text-sm font-semibold hover:bg-primary/90 transition-all duration-200 shadow-sm hover:shadow-md"
+                whileHover={{ scale: 1.03, transition: { duration: 0.18 } }}
+                whileTap={{ scale: 0.97 }}
+                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-primary text-primary-foreground text-sm font-semibold shadow-sm hover:bg-primary/90 transition-colors duration-200"
               >
                 View Projects
                 <ArrowRight size={16} />
-              </button>
-              <button
+              </motion.button>
+              <motion.button
                 onClick={() => onScrollTo("#contact")}
-                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-card border border-border text-foreground text-sm font-semibold hover:bg-muted/60 hover:border-primary/30 transition-all duration-200"
+                whileHover={{ scale: 1.03, transition: { duration: 0.18 } }}
+                whileTap={{ scale: 0.97 }}
+                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-card/80 backdrop-blur-sm border border-border text-foreground text-sm font-semibold hover:bg-muted/60 hover:border-primary/30 transition-all duration-200"
               >
                 <Mail size={16} />
                 Contact
-              </button>
+              </motion.button>
             </motion.div>
 
             {/* Quick stats */}
@@ -106,7 +116,7 @@ export function HeroSection({ onScrollTo }: HeroSectionProps) {
             >
               {[
                 { value: "4+", label: "Projects Built" },
-                { value: "2026", label: "Expected Grad" },
+                { value: "2029", label: "Expected Grad" },
                 { value: "CSB", label: "Honors Program" },
               ].map((stat) => (
                 <div key={stat.label}>
@@ -117,26 +127,18 @@ export function HeroSection({ onScrollTo }: HeroSectionProps) {
             </motion.div>
           </div>
 
-          {/* Right — Node Network */}
-          <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ delay: 0.3, duration: 0.8 }}
-            className="relative h-[420px] lg:h-[520px] rounded-2xl overflow-hidden bg-card/50 border border-border shadow-card"
-          >
-            {/* Gradient overlay hint */}
-            <div className="absolute inset-0 pointer-events-none rounded-2xl"
-              style={{ background: "radial-gradient(ellipse at center, transparent 40%, hsl(var(--background)/0.15) 100%)" }}
-            />
-            <NodeNetwork onNodeClick={onScrollTo} />
-
-            {/* Corner label */}
-            <div className="absolute bottom-3 right-4 text-xs text-muted-foreground/50 font-mono">
-              click nodes to navigate
-            </div>
-          </motion.div>
+          {/* Right column — empty spacer so network shows through */}
+          <div className="hidden lg:block" />
         </div>
       </div>
+
+      {/* Bottom hint label */}
+      <div className="absolute bottom-6 right-6 z-10 text-xs text-muted-foreground/50 font-mono pointer-events-none">
+        click nodes to navigate
+      </div>
+
+      {/* Pointer events re-enabled for right half on desktop so nodes are clickable */}
+      <div className="absolute inset-y-0 right-0 w-full lg:w-1/2 pointer-events-auto z-0" />
     </section>
   );
 }
