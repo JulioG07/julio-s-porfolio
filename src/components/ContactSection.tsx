@@ -4,21 +4,21 @@ import { Linkedin, Github, Mail, ArrowUpRight } from "lucide-react";
 const links = [
   {
     label: "LinkedIn",
-    href: "https://linkedin.com/in/juliogoitia",
+    href: "https://www.linkedin.com/in/julio-goitia-5a828330b/",
     icon: Linkedin,
     description: "Connect with me professionally",
     color: "primary",
   },
   {
     label: "GitHub",
-    href: "https://github.com/juliogoitia",
+    href: "https://github.com/JulioG07",
     icon: Github,
     description: "See what I'm building",
     color: "secondary",
   },
   {
     label: "Email",
-    href: "mailto:julio@example.com",
+    href: "mailto:jug229@lehigh.edu",
     icon: Mail,
     description: "Drop me a message",
     color: "primary",
@@ -60,7 +60,10 @@ export function ContactSection() {
           >
             <div
               className="w-12 h-12 rounded-2xl mb-6 flex items-center justify-center"
-              style={{ background: "linear-gradient(135deg, hsl(var(--primary)), hsl(var(--secondary)))" }}
+              style={{
+                background:
+                  "linear-gradient(135deg, hsl(var(--primary)), hsl(var(--secondary)))",
+              }}
             >
               <Mail size={22} className="text-primary-foreground" />
             </div>
@@ -68,13 +71,13 @@ export function ContactSection() {
               Open to opportunities
             </h3>
             <p className="text-muted-foreground leading-relaxed mb-6">
-              I'm actively seeking SWE and Product Management internships for Summer 2026. 
-              I'm interested in roles at companies pushing the boundaries of AI, developer tooling, 
-              and product-led growth.
+              I'm actively seeking SWE and Product Management internships for Summer 2026.
+              I'm interested in roles at companies pushing the boundaries of AI, developer
+              tooling, and product-led growth.
             </p>
             <p className="text-muted-foreground leading-relaxed">
-              Not hiring? Still reach out — I'm always happy to chat about projects, 
-              share ideas, or collaborate on something interesting.
+              Not hiring? Still reach out — I'm always happy to chat about projects, share
+              ideas, or collaborate on something interesting.
             </p>
           </motion.div>
 
@@ -82,9 +85,20 @@ export function ContactSection() {
           <div className="flex flex-col gap-4">
             {links.map((link, i) => {
               const Icon = link.icon;
-              const colorClass = link.color === "primary"
-                ? { bg: "bg-primary/8", border: "border-primary/20", text: "text-primary", iconBg: "bg-primary/10" }
-                : { bg: "bg-secondary/8", border: "border-secondary/20", text: "text-secondary", iconBg: "bg-secondary/10" };
+              const colorClass =
+                link.color === "primary"
+                  ? {
+                      bg: "bg-primary/8",
+                      border: "border-primary/20",
+                      text: "text-primary",
+                      iconBg: "bg-primary/10",
+                    }
+                  : {
+                      bg: "bg-secondary/8",
+                      border: "border-secondary/20",
+                      text: "text-secondary",
+                      iconBg: "bg-secondary/10",
+                    };
 
               return (
                 <motion.a
@@ -96,11 +110,13 @@ export function ContactSection() {
                   whileInView={{ opacity: 1, x: 0 }}
                   viewport={{ once: true }}
                   transition={{ delay: i * 0.1, duration: 0.5 }}
-                  whileHover={{ x: 4 }}
-                  className={`flex items-center gap-4 bg-card border ${colorClass.border} rounded-2xl p-5 
+                  whileHover={{ x: 4, transition: { duration: 0.2 } }}
+                  className={`flex items-center gap-4 bg-card border ${colorClass.border} rounded-2xl p-5
                     shadow-card hover:shadow-card-hover transition-all duration-300 group`}
                 >
-                  <div className={`p-3 rounded-xl ${colorClass.iconBg} border ${colorClass.border}`}>
+                  <div
+                    className={`p-3 rounded-xl ${colorClass.iconBg} border ${colorClass.border}`}
+                  >
                     <Icon size={20} className={colorClass.text} />
                   </div>
                   <div className="flex-1">

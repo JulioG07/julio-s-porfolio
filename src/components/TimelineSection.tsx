@@ -1,41 +1,54 @@
 import { motion } from "framer-motion";
-import { Building2, Trophy, GraduationCap, Cpu, BookOpen } from "lucide-react";
+import { Building2, Trophy, GraduationCap, Cpu, BookOpen, Briefcase } from "lucide-react";
 
 const events = [
   {
     year: "2026",
     title: "SEO First Year Tech Developer",
-    description: "Selected for SEO's competitive First Year Academy, connecting with top-tier tech companies and mentors in the industry.",
+    description:
+      "Selected as 1 of 75 from 500+ applicants for SEO's competitive tech career development program. Developing Python skills through hands-on projects and Git collaborative workflows.",
     icon: Building2,
     color: "primary",
   },
   {
     year: "2025",
     title: "Lehigh Valley Hackathon — Evento-AI",
-    description: "Built and shipped Evento-AI: an AI-powered event discovery platform in 24 hours. Demonstrated rapid prototyping and product thinking under pressure.",
+    description:
+      "Built Evento-AI in 24 hours at a hackathon sponsored by AWS & Lehigh CSBA — a serverless app using Gemini AI and AWS Lambda to convert GroupMe messages into Google Calendar events.",
     icon: Trophy,
     color: "secondary",
   },
   {
     year: "2025",
-    title: "CSB Honors Program @ Lehigh",
-    description: "Began the competitive Computer Science & Business Honors program — one of Lehigh's most rigorous dual-degree tracks combining engineering and business.",
+    title: "CSB Honors Program @ Lehigh University",
+    description:
+      "Enrolled in Lehigh's competitive Computer Science & Business Honors dual-degree track. Cumulative GPA: 3.84. Pursuing minors in Data Science and Entrepreneurship.",
     icon: GraduationCap,
     color: "primary",
   },
   {
-    year: "2024",
-    title: "IoT Mailbox Sensor",
-    description: "Designed and built a custom IoT solution using Raspberry Pi — exploring embedded systems, hardware integration, and real-time event-driven architectures.",
-    icon: Cpu,
+    year: "2025",
+    title: "Curriculum Development Intern — IB CS HL",
+    description:
+      "Redesigned IB Computer Science HL lessons for Brien McMahon High School — creating interactive slide decks and logic gate demos on breadboards now used by 20–30 students.",
+    icon: BookOpen,
     color: "secondary",
   },
   {
     year: "2024",
-    title: "Coding Bootcamp Instructor",
-    description: "Taught foundational programming concepts to beginners, honing the ability to communicate complex ideas clearly — a core product management skill.",
+    title: "Coding Bootcamp Instructor — Trackside Teen Center",
+    description:
+      "Organized and led a 4-day coding bootcamp teaching middle schoolers web development (HTML, CSS, JavaScript) using an interactive curriculum with Replit and coding games.",
     icon: BookOpen,
     color: "primary",
+  },
+  {
+    year: "2023–Present",
+    title: "Communication Specialist — Durango Insurance",
+    description:
+      "Manage communication with 100+ clients weekly. Improved customer engagement and reduced policy cancellations by increasing follow-up calls and documenting all client interactions.",
+    icon: Briefcase,
+    color: "secondary",
   },
 ];
 
@@ -71,9 +84,20 @@ export function TimelineSection() {
             {events.map((event, i) => {
               const Icon = event.icon;
               const isLeft = i % 2 === 0;
-              const colorClass = event.color === "primary"
-                ? { bg: "bg-primary/8", border: "border-primary/25", text: "text-primary", dot: "bg-primary" }
-                : { bg: "bg-secondary/8", border: "border-secondary/25", text: "text-secondary", dot: "bg-secondary" };
+              const colorClass =
+                event.color === "primary"
+                  ? {
+                      bg: "bg-primary/8",
+                      border: "border-primary/25",
+                      text: "text-primary",
+                      dot: "bg-primary",
+                    }
+                  : {
+                      bg: "bg-secondary/8",
+                      border: "border-secondary/25",
+                      text: "text-secondary",
+                      dot: "bg-secondary",
+                    };
 
               return (
                 <motion.div
@@ -85,19 +109,27 @@ export function TimelineSection() {
                   className={`relative flex md:justify-${isLeft ? "start" : "end"} pb-10`}
                 >
                   {/* Connector dot */}
-                  <div className={`absolute left-[14px] md:left-1/2 top-5 w-[10px] h-[10px] rounded-full ${colorClass.dot} md:-translate-x-1/2 ring-2 ring-background z-10`} />
+                  <div
+                    className={`absolute left-[14px] md:left-1/2 top-5 w-[10px] h-[10px] rounded-full ${colorClass.dot} md:-translate-x-1/2 ring-2 ring-background z-10`}
+                  />
 
                   {/* Card */}
                   <div
                     className={`ml-10 md:ml-0 ${isLeft ? "md:mr-[calc(50%+20px)]" : "md:ml-[calc(50%+20px)]"} max-w-sm w-full`}
                   >
-                    <div className={`bg-card border ${colorClass.border} rounded-2xl p-5 shadow-card hover:shadow-card-hover transition-all duration-300 group`}>
+                    <div
+                      className={`bg-card border ${colorClass.border} rounded-2xl p-5 shadow-card hover:shadow-card-hover transition-all duration-300 group`}
+                    >
                       <div className="flex items-start gap-3 mb-3">
-                        <div className={`p-2 rounded-xl ${colorClass.bg} border ${colorClass.border}`}>
+                        <div
+                          className={`p-2 rounded-xl ${colorClass.bg} border ${colorClass.border}`}
+                        >
                           <Icon size={16} className={colorClass.text} />
                         </div>
                         <div>
-                          <span className={`text-xs font-bold tracking-widest ${colorClass.text} uppercase`}>
+                          <span
+                            className={`text-xs font-bold tracking-widest ${colorClass.text} uppercase`}
+                          >
                             {event.year}
                           </span>
                           <h3 className="text-sm font-semibold text-foreground mt-0.5 leading-snug">
