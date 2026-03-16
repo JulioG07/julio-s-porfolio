@@ -136,7 +136,7 @@ export function ProjectsSection() {
             onMouseLeave={handleAreaLeave}
           >
             {/* Extra height so lifted cards have room; increased for wider spacing */}
-            <div className="relative" style={{ height: "460px", width: "400px" }}>
+            <div className="relative" style={{ height: "520px", width: "400px" }}>
               <DisplayCards cards={displayCards} />
             </div>
             <p className="text-xs text-muted-foreground/50 mt-3 font-mono text-center">
