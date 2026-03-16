@@ -52,7 +52,6 @@ const secondaryColor = "text-secondary";
 
 export function ProjectsSection() {
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
-  // Track whether the cursor is in the cards zone or the detail panel
   const leaveTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const handleCardEnter = (i: number) => {
@@ -60,11 +59,11 @@ export function ProjectsSection() {
     setHoveredIndex(i);
   };
 
-  // Small delay before clearing so cursor can cross the gap to the detail panel
+  // Extended grace period (200ms) so cursor can comfortably cross to the detail panel
   const handleAreaLeave = () => {
     leaveTimerRef.current = setTimeout(() => {
       setHoveredIndex(null);
-    }, 120);
+    }, 200);
   };
 
   const handlePanelEnter = () => {
@@ -75,15 +74,16 @@ export function ProjectsSection() {
     const Icon = project.icon;
     const isSecondary = project.color === "secondary";
 
-    // Increased vertical offset (20px per step) for more breathing room between cards
+    // 30px vertical + 14px horizontal increments — more separation between cards
+    const base = "before:absolute before:w-[100%] before:outline-1 before:rounded-xl before:outline-border before:h-[100%] before:content-[''] before:bg-blend-overlay before:bg-background/50 grayscale-[100%] hover:before:opacity-0 before:transition-opacity before:duration-700 hover:grayscale-0 before:left-0 before:top-0 transition-all duration-500 cursor-pointer";
     const stackOffset =
       i === 0
-        ? "[grid-area:stack] hover:-translate-y-[170px] before:absolute before:w-[100%] before:outline-1 before:rounded-xl before:outline-border before:h-[100%] before:content-[''] before:bg-blend-overlay before:bg-background/50 grayscale-[100%] hover:before:opacity-0 before:transition-opacity before:duration-700 hover:grayscale-0 before:left-0 before:top-0 transition-all duration-500 cursor-pointer"
+        ? `[grid-area:stack] hover:-translate-y-[200px] ${base}`
         : i === 1
-        ? "[grid-area:stack] translate-x-[14px] translate-y-[20px] hover:-translate-y-[150px] hover:translate-x-[14px] before:absolute before:w-[100%] before:outline-1 before:rounded-xl before:outline-border before:h-[100%] before:content-[''] before:bg-blend-overlay before:bg-background/50 grayscale-[100%] hover:before:opacity-0 before:transition-opacity before:duration-700 hover:grayscale-0 before:left-0 before:top-0 transition-all duration-500 cursor-pointer"
+        ? `[grid-area:stack] translate-x-[14px] translate-y-[30px] hover:-translate-y-[170px] hover:translate-x-[14px] ${base}`
         : i === 2
-        ? "[grid-area:stack] translate-x-[28px] translate-y-[40px] hover:-translate-y-[130px] hover:translate-x-[28px] before:absolute before:w-[100%] before:outline-1 before:rounded-xl before:outline-border before:h-[100%] before:content-[''] before:bg-blend-overlay before:bg-background/50 grayscale-[100%] hover:before:opacity-0 before:transition-opacity before:duration-700 hover:grayscale-0 before:left-0 before:top-0 transition-all duration-500 cursor-pointer"
-        : "[grid-area:stack] translate-x-[42px] translate-y-[60px] hover:-translate-y-[110px] hover:translate-x-[42px] before:absolute before:w-[100%] before:outline-1 before:rounded-xl before:outline-border before:h-[100%] before:content-[''] before:bg-blend-overlay before:bg-background/50 grayscale-[100%] hover:before:opacity-0 before:transition-opacity before:duration-700 hover:grayscale-0 before:left-0 before:top-0 transition-all duration-500 cursor-pointer";
+        ? `[grid-area:stack] translate-x-[28px] translate-y-[60px] hover:-translate-y-[140px] hover:translate-x-[28px] ${base}`
+        : `[grid-area:stack] translate-x-[42px] translate-y-[90px] hover:-translate-y-[110px] hover:translate-x-[42px] ${base}`;
 
     return {
       className: stackOffset,
@@ -136,7 +136,7 @@ export function ProjectsSection() {
             onMouseLeave={handleAreaLeave}
           >
             {/* Extra height so lifted cards have room; increased for wider spacing */}
-            <div className="relative" style={{ height: "460px", width: "400px" }}>
+            <div className="relative" style={{ height: "520px", width: "400px" }}>
               <DisplayCards cards={displayCards} />
             </div>
             <p className="text-xs text-muted-foreground/50 mt-3 font-mono text-center">
