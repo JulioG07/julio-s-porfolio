@@ -69,22 +69,22 @@ export function TimelineSection() {
 
   return (
     <section id="timeline" className="py-24 bg-muted/20 relative overflow-hidden">
-      {/* Background logo ghost — cinematic fade-in on card hover */}
+      {/* Background logo ghost — cinematic fade-in on card hover, above all page content */}
       <AnimatePresence mode="wait">
         {hoveredLogo && (
           <motion.div
             key={hoveredLogo}
-            initial={{ opacity: 0, scale: 1.06 }}
+            initial={{ opacity: 0, scale: 1.08 }}
             animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 0.96 }}
-            transition={{ duration: 0.5, ease: "easeInOut" }}
-            className="absolute inset-0 flex items-center justify-center pointer-events-none z-[1]"
+            exit={{ opacity: 0, scale: 0.94 }}
+            transition={{ duration: 0.45, ease: "easeInOut" }}
+            className="fixed inset-0 flex items-center justify-center pointer-events-none z-50"
           >
             <img
               src={hoveredLogo}
               alt=""
-              className="w-[85vw] max-w-5xl object-contain select-none"
-              style={{ opacity: 0.32, filter: "grayscale(40%)" }}
+              className="w-[90vw] max-w-6xl object-contain select-none"
+              style={{ opacity: 0.45, filter: "grayscale(30%)" }}
             />
           </motion.div>
         )}
