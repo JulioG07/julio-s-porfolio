@@ -150,7 +150,7 @@ export function TimelineSection() {
 
                   {/* Card */}
                   <div
-                    className={`ml-10 md:ml-0 ${isLeft ? "md:mr-[calc(50%+20px)]" : "md:ml-[calc(50%+20px)]"} max-w-sm w-full`}
+                  className={`ml-10 md:ml-0 ${isLeft ? "md:mr-[calc(50%+20px)]" : "md:ml-[calc(50%+20px)]"} max-w-sm w-full relative z-[60]`}
                     onMouseEnter={() => setHoveredLogo(event.logo)}
                     onMouseLeave={() => setHoveredLogo(null)}
                   >
