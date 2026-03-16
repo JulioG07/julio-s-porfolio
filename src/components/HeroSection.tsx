@@ -122,8 +122,8 @@ export function HeroSection({ onScrollTo }: HeroSectionProps) {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 0.6, duration: 1 }}
-        className="relative z-0 flex-1 w-full"
-        style={{ minHeight: "420px" }}
+        className="relative z-0 flex-1 w-full -mt-6"
+        style={{ minHeight: "460px" }}
       >
         <NodeNetwork onNodeClick={onScrollTo} />
       </motion.div>
