@@ -24,7 +24,7 @@ export function HeroSection({ onScrollTo }: HeroSectionProps) {
       />
 
       {/* ── TOP: Introduction text ── */}
-      <div className="relative z-10 section-container w-full pt-16 pb-8 pointer-events-none">
+      <div className="relative z-10 section-container w-full pt-10 pb-2 pointer-events-none">
         <div className="flex flex-col items-center text-center gap-5 max-w-2xl mx-auto pointer-events-auto">
           {/* Badge */}
           <motion.div
