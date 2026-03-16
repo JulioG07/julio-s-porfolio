@@ -16,6 +16,7 @@ const events = [
     icon: Building2,
     color: "primary",
     logo: logoSeo,
+    logoSize: "w-[42vw] max-w-xl",
   },
   {
     year: "2025",
@@ -25,6 +26,7 @@ const events = [
     icon: Trophy,
     color: "secondary",
     logo: logoLehigh,
+    logoSize: "w-[70vw] max-w-4xl",
   },
   {
     year: "2025",
@@ -34,6 +36,7 @@ const events = [
     icon: GraduationCap,
     color: "primary",
     logo: logoLehigh,
+    logoSize: "w-[70vw] max-w-4xl",
   },
   {
     year: "2025",
@@ -43,6 +46,7 @@ const events = [
     icon: BookOpen,
     color: "secondary",
     logo: logoBmhs,
+    logoSize: "w-[44vw] max-w-2xl",
   },
   {
     year: "2024",
@@ -52,6 +56,7 @@ const events = [
     icon: BookOpen,
     color: "primary",
     logo: logoTrackside,
+    logoSize: "w-[72vw] max-w-4xl",
   },
   {
     year: "2023–Present",
@@ -61,30 +66,33 @@ const events = [
     icon: Briefcase,
     color: "secondary",
     logo: logoDurango,
+    logoSize: "w-[72vw] max-w-4xl",
   },
 ];
 
+interface HoveredEntry { logo: string; size: string }
+
 export function TimelineSection() {
-  const [hoveredLogo, setHoveredLogo] = useState<string | null>(null);
+  const [hovered, setHovered] = useState<HoveredEntry | null>(null);
 
   return (
     <section id="timeline" className="py-24 bg-muted/20 relative overflow-hidden">
-      {/* Background logo ghost — cinematic fade-in on card hover, above all page content */}
+      {/* Background logo ghost — z-40: above all content, below hovered card (z-50) */}
       <AnimatePresence mode="wait">
-        {hoveredLogo && (
+        {hovered && (
           <motion.div
-            key={hoveredLogo}
-            initial={{ opacity: 0, scale: 1.08 }}
+            key={hovered.logo}
+            initial={{ opacity: 0, scale: 1.06 }}
             animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 0.94 }}
-            transition={{ duration: 0.45, ease: "easeInOut" }}
-            className="fixed inset-0 flex items-center justify-center pointer-events-none z-50"
+            exit={{ opacity: 0, scale: 0.96 }}
+            transition={{ duration: 0.4, ease: "easeInOut" }}
+            className="fixed inset-0 flex items-center justify-center pointer-events-none z-40"
           >
             <img
-              src={hoveredLogo}
+              src={hovered.logo}
               alt=""
-              className="w-[90vw] max-w-6xl object-contain select-none"
-              style={{ opacity: 0.45, filter: "grayscale(30%)" }}
+              className={`${hovered.size} object-contain select-none`}
+              style={{ opacity: 0.38, filter: "grayscale(25%)" }}
             />
           </motion.div>
         )}
@@ -148,11 +156,11 @@ export function TimelineSection() {
                     className={`absolute left-[14px] md:left-1/2 top-5 w-[10px] h-[10px] rounded-full ${colorClass.dot} md:-translate-x-1/2 ring-2 ring-background z-10`}
                   />
 
-                  {/* Card */}
+                  {/* Card — z-50: above ghost image (z-40) when hovered */}
                   <div
-                  className={`ml-10 md:ml-0 ${isLeft ? "md:mr-[calc(50%+20px)]" : "md:ml-[calc(50%+20px)]"} max-w-sm w-full relative z-[60]`}
-                    onMouseEnter={() => setHoveredLogo(event.logo)}
-                    onMouseLeave={() => setHoveredLogo(null)}
+                    className={`ml-10 md:ml-0 ${isLeft ? "md:mr-[calc(50%+20px)]" : "md:ml-[calc(50%+20px)]"} max-w-sm w-full relative z-50`}
+                    onMouseEnter={() => setHovered({ logo: event.logo, size: event.logoSize })}
+                    onMouseLeave={() => setHovered(null)}
                   >
                     <div
                       className={`bg-card border ${colorClass.border} rounded-2xl p-5 shadow-card hover:shadow-card-hover transition-all duration-300 group hover:scale-[1.02]`}
@@ -188,3 +196,5 @@ export function TimelineSection() {
     </section>
   );
 }
+
+

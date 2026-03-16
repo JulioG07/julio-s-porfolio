@@ -78,12 +78,12 @@ export function ProjectsSection() {
     const base = "before:absolute before:w-[100%] before:outline-1 before:rounded-xl before:outline-border before:h-[100%] before:content-[''] before:bg-blend-overlay before:bg-background/50 grayscale-[100%] hover:before:opacity-0 before:transition-opacity before:duration-700 hover:grayscale-0 before:left-0 before:top-0 transition-all duration-500 cursor-pointer";
     const stackOffset =
       i === 0
-        ? `[grid-area:stack] hover:-translate-y-[200px] ${base}`
+        ? `[grid-area:stack] hover:-translate-y-[220px] ${base}`
         : i === 1
-        ? `[grid-area:stack] translate-x-[14px] translate-y-[30px] hover:-translate-y-[170px] hover:translate-x-[14px] ${base}`
+        ? `[grid-area:stack] translate-x-[18px] translate-y-[48px] hover:-translate-y-[172px] hover:translate-x-[18px] ${base}`
         : i === 2
-        ? `[grid-area:stack] translate-x-[28px] translate-y-[60px] hover:-translate-y-[140px] hover:translate-x-[28px] ${base}`
-        : `[grid-area:stack] translate-x-[42px] translate-y-[90px] hover:-translate-y-[110px] hover:translate-x-[42px] ${base}`;
+        ? `[grid-area:stack] translate-x-[36px] translate-y-[96px] hover:-translate-y-[124px] hover:translate-x-[36px] ${base}`
+        : `[grid-area:stack] translate-x-[54px] translate-y-[144px] hover:-translate-y-[76px] hover:translate-x-[54px] ${base}`;
 
     return {
       className: stackOffset,
