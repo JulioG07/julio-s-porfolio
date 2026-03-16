@@ -16,6 +16,7 @@ const events = [
     icon: Building2,
     color: "primary",
     logo: logoSeo,
+    logoSize: "w-[42vw] max-w-xl",
   },
   {
     year: "2025",
@@ -25,6 +26,7 @@ const events = [
     icon: Trophy,
     color: "secondary",
     logo: logoLehigh,
+    logoSize: "w-[70vw] max-w-4xl",
   },
   {
     year: "2025",
@@ -34,6 +36,7 @@ const events = [
     icon: GraduationCap,
     color: "primary",
     logo: logoLehigh,
+    logoSize: "w-[70vw] max-w-4xl",
   },
   {
     year: "2025",
@@ -43,6 +46,7 @@ const events = [
     icon: BookOpen,
     color: "secondary",
     logo: logoBmhs,
+    logoSize: "w-[44vw] max-w-2xl",
   },
   {
     year: "2024",
@@ -52,6 +56,7 @@ const events = [
     icon: BookOpen,
     color: "primary",
     logo: logoTrackside,
+    logoSize: "w-[72vw] max-w-4xl",
   },
   {
     year: "2023–Present",
@@ -61,11 +66,14 @@ const events = [
     icon: Briefcase,
     color: "secondary",
     logo: logoDurango,
+    logoSize: "w-[72vw] max-w-4xl",
   },
 ];
 
+interface HoveredEntry { logo: string; size: string }
+
 export function TimelineSection() {
-  const [hoveredLogo, setHoveredLogo] = useState<string | null>(null);
+  const [hovered, setHovered] = useState<HoveredEntry | null>(null);
 
   return (
     <section id="timeline" className="py-24 bg-muted/20 relative overflow-hidden">
