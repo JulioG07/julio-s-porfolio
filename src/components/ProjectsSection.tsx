@@ -50,6 +50,17 @@ const projects = [
 const primaryColor = "text-primary";
 const secondaryColor = "text-secondary";
 
+// Resting offsets for each card in the stack (no hover classes)
+const RESTING_OFFSETS = [
+  { x: 0,  y: 0   },
+  { x: 18, y: 48  },
+  { x: 36, y: 96  },
+  { x: 54, y: 144 },
+];
+
+// How far each card lifts when active
+const LIFT_Y = -220;
+
 export function ProjectsSection() {
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
   const leaveTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -59,7 +70,6 @@ export function ProjectsSection() {
     setHoveredIndex(i);
   };
 
-  // Extended grace period (200ms) so cursor can comfortably cross to the detail panel
   const handleAreaLeave = () => {
     leaveTimerRef.current = setTimeout(() => {
       setHoveredIndex(null);
@@ -73,20 +83,26 @@ export function ProjectsSection() {
   const displayCards = projects.map((project, i) => {
     const Icon = project.icon;
     const isSecondary = project.color === "secondary";
+    const isActive = hoveredIndex === i;
 
-    // 30px vertical + 14px horizontal increments — more separation between cards
-    const base = "before:absolute before:w-[100%] before:outline-1 before:rounded-xl before:outline-border before:h-[100%] before:content-[''] before:bg-blend-overlay before:bg-background/50 grayscale-[100%] hover:before:opacity-0 before:transition-opacity before:duration-700 hover:grayscale-0 before:left-0 before:top-0 transition-all duration-500 cursor-pointer";
-    const stackOffset =
-      i === 0
-        ? `[grid-area:stack] hover:-translate-y-[220px] ${base}`
-        : i === 1
-        ? `[grid-area:stack] translate-x-[18px] translate-y-[48px] hover:-translate-y-[172px] hover:translate-x-[18px] ${base}`
-        : i === 2
-        ? `[grid-area:stack] translate-x-[36px] translate-y-[96px] hover:-translate-y-[124px] hover:translate-x-[36px] ${base}`
-        : `[grid-area:stack] translate-x-[54px] translate-y-[144px] hover:-translate-y-[76px] hover:translate-x-[54px] ${base}`;
+    const { x, y } = RESTING_OFFSETS[i];
+    const liftY = isActive ? LIFT_Y : y;
+
+    // Static base class — NO hover: translate classes so CSS and JS don't fight
+    const base =
+      "before:absolute before:w-[100%] before:outline-1 before:rounded-xl before:outline-border before:h-[100%] before:content-[''] before:bg-blend-overlay before:bg-background/50 before:left-0 before:top-0 transition-all duration-500 cursor-pointer [grid-area:stack]";
+
+    const grayscaleClass = isActive
+      ? "grayscale-0 before:opacity-0"
+      : "grayscale-[100%] before:opacity-100 before:transition-opacity before:duration-700";
 
     return {
-      className: stackOffset,
+      className: `${base} ${grayscaleClass}`,
+      // Inline style drives ALL positional transforms — single source of truth
+      style: {
+        transform: `translate(${x}px, ${liftY}px)`,
+        zIndex: isActive ? 10 : i,
+      },
       icon: <Icon size={16} />,
       title: project.title,
       description: project.description,
@@ -123,10 +139,10 @@ export function ProjectsSection() {
           </p>
         </motion.div>
 
-        {/* Two-column layout: cards left, detail panel right */}
+        {/* Two-column layout */}
         <div className="flex flex-col lg:flex-row items-start gap-0 lg:gap-0">
 
-          {/* Left — stacked DisplayCards + invisible hover bridge */}
+          {/* Left — stacked DisplayCards */}
           <motion.div
             initial={{ opacity: 0, y: 28 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -135,7 +151,6 @@ export function ProjectsSection() {
             className="flex-shrink-0"
             onMouseLeave={handleAreaLeave}
           >
-            {/* Extra height so lifted cards have room; increased for wider spacing */}
             <div className="relative" style={{ height: "520px", width: "400px" }}>
               <DisplayCards cards={displayCards} />
             </div>
@@ -144,7 +159,7 @@ export function ProjectsSection() {
             </p>
           </motion.div>
 
-          {/* Right — project detail panel, stays active while cursor is inside */}
+          {/* Right — project detail panel */}
           <div
             className="flex-1 min-h-[400px] flex items-center pl-10 lg:pl-14"
             onMouseEnter={handlePanelEnter}
@@ -202,7 +217,7 @@ export function ProjectsSection() {
                     ))}
                   </div>
 
-                  {/* Placeholder CTA */}
+                  {/* CTA */}
                   <button className="inline-flex items-center gap-1.5 text-sm font-semibold text-primary hover:text-primary/80 transition-colors group">
                     View Details
                     <ArrowRight size={14} className="group-hover:translate-x-0.5 transition-transform" />

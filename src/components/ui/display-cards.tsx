@@ -1,9 +1,11 @@
 "use client";
 
 import { cn } from "@/lib/utils";
+import React from "react";
 
 interface DisplayCardProps {
   className?: string;
+  style?: React.CSSProperties;
   icon?: React.ReactNode;
   title?: string;
   description?: string;
@@ -17,6 +19,7 @@ interface DisplayCardProps {
 
 function DisplayCard({
   className,
+  style,
   icon,
   title = "Featured",
   description = "Discover amazing content",
@@ -31,8 +34,9 @@ function DisplayCard({
     <div
       onMouseEnter={onHover}
       onMouseLeave={onLeave}
+      style={style}
       className={cn(
-        "relative flex h-44 w-[22rem] select-none flex-col justify-between rounded-xl border border-border bg-card p-5 shadow-card transition-all duration-500",
+        "relative flex h-44 w-[22rem] select-none flex-col justify-between rounded-xl border border-border bg-card p-5 shadow-card",
         "[&>*]:flex [&>*]:items-center [&>*]:gap-2",
         className
       )}
@@ -68,7 +72,7 @@ interface DisplayCardsProps {
 }
 
 export default function DisplayCards({ cards }: DisplayCardsProps) {
-  const defaultCards = [
+  const defaultCards: DisplayCardProps[] = [
     {
       className:
         "[grid-area:stack] hover:-translate-y-10 before:absolute before:w-[100%] before:outline-1 before:rounded-xl before:outline-border before:h-[100%] before:content-[''] before:bg-blend-overlay before:bg-background/50 grayscale-[100%] hover:before:opacity-0 before:transition-opacity before:duration-700 hover:grayscale-0 before:left-0 before:top-0",
