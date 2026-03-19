@@ -16,7 +16,7 @@ const events = [
     icon: Building2,
     color: "primary",
     logo: logoSeo,
-    logoSize: "w-[42vw] max-w-xl",
+    logoSize: "w-[32vw] max-w-sm",
   },
   {
     year: "2025",
@@ -26,7 +26,7 @@ const events = [
     icon: Trophy,
     color: "secondary",
     logo: logoLehigh,
-    logoSize: "w-[70vw] max-w-4xl",
+    logoSize: "w-[65vw] max-w-4xl",
   },
   {
     year: "2025",
@@ -36,7 +36,7 @@ const events = [
     icon: GraduationCap,
     color: "primary",
     logo: logoLehigh,
-    logoSize: "w-[70vw] max-w-4xl",
+    logoSize: "w-[65vw] max-w-4xl",
   },
   {
     year: "2025",
@@ -46,7 +46,7 @@ const events = [
     icon: BookOpen,
     color: "secondary",
     logo: logoBmhs,
-    logoSize: "w-[44vw] max-w-2xl",
+    logoSize: "w-[34vw] max-w-lg",
   },
   {
     year: "2024",
@@ -56,7 +56,7 @@ const events = [
     icon: BookOpen,
     color: "primary",
     logo: logoTrackside,
-    logoSize: "w-[72vw] max-w-4xl",
+    logoSize: "w-[68vw] max-w-4xl",
   },
   {
     year: "2023–Present",
@@ -66,33 +66,32 @@ const events = [
     icon: Briefcase,
     color: "secondary",
     logo: logoDurango,
-    logoSize: "w-[72vw] max-w-4xl",
+    logoSize: "w-[68vw] max-w-4xl",
   },
 ];
 
-interface HoveredEntry { logo: string; size: string }
-
 export function TimelineSection() {
-  const [hovered, setHovered] = useState<HoveredEntry | null>(null);
+  const [hoveredIdx, setHoveredIdx] = useState<number | null>(null);
+
+  const hoveredEvent = hoveredIdx !== null ? events[hoveredIdx] : null;
 
   return (
     <section id="timeline" className="py-24 bg-muted/20 relative overflow-hidden">
-      {/* Background logo ghost — z-40: above all content, below hovered card (z-50) */}
       <AnimatePresence mode="wait">
-        {hovered && (
+        {hoveredEvent && (
           <motion.div
-            key={hovered.logo}
-            initial={{ opacity: 0, scale: 1.06 }}
+            key={hoveredEvent.logo}
+            initial={{ opacity: 0, scale: 1.05 }}
             animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 0.96 }}
-            transition={{ duration: 0.4, ease: "easeInOut" }}
-            className="fixed inset-0 flex items-center justify-center pointer-events-none z-40"
+            exit={{ opacity: 0, scale: 0.97 }}
+            transition={{ duration: 0.35, ease: "easeInOut" }}
+            className="fixed inset-0 flex items-center justify-center pointer-events-none z-[45]"
           >
             <img
-              src={hovered.logo}
+              src={hoveredEvent.logo}
               alt=""
-              className={`${hovered.size} object-contain select-none`}
-              style={{ opacity: 0.38, filter: "grayscale(25%)" }}
+              className={`${hoveredEvent.logoSize} object-contain select-none`}
+              style={{ opacity: 0.42, filter: "grayscale(20%)" }}
             />
           </motion.div>
         )}
@@ -127,6 +126,8 @@ export function TimelineSection() {
             {events.map((event, i) => {
               const Icon = event.icon;
               const isLeft = i % 2 === 0;
+              const isHovered = hoveredIdx === i;
+
               const colorClass =
                 event.color === "primary"
                   ? {
@@ -153,14 +154,15 @@ export function TimelineSection() {
                 >
                   {/* Connector dot */}
                   <div
-                    className={`absolute left-[14px] md:left-1/2 top-5 w-[10px] h-[10px] rounded-full ${colorClass.dot} md:-translate-x-1/2 ring-2 ring-background z-10`}
+                    className={`absolute left-[14px] md:left-1/2 top-5 w-[10px] h-[10px] rounded-full ${colorClass.dot} md:-translate-x-1/2 ring-2 ring-background`}
+                    style={{ zIndex: isHovered ? 61 : 10 }}
                   />
 
-                  {/* Card — z-50: above ghost image (z-40) when hovered */}
                   <div
-                    className={`ml-10 md:ml-0 ${isLeft ? "md:mr-[calc(50%+20px)]" : "md:ml-[calc(50%+20px)]"} max-w-sm w-full relative z-50`}
-                    onMouseEnter={() => setHovered({ logo: event.logo, size: event.logoSize })}
-                    onMouseLeave={() => setHovered(null)}
+                    className={`ml-10 md:ml-0 ${isLeft ? "md:mr-[calc(50%+20px)]" : "md:ml-[calc(50%+20px)]"} max-w-sm w-full relative`}
+                    style={{ zIndex: isHovered ? 60 : 10 }}
+                    onMouseEnter={() => setHoveredIdx(i)}
+                    onMouseLeave={() => setHoveredIdx(null)}
                   >
                     <div
                       className={`bg-card border ${colorClass.border} rounded-2xl p-5 shadow-card hover:shadow-card-hover transition-all duration-300 group hover:scale-[1.02]`}
@@ -196,5 +198,3 @@ export function TimelineSection() {
     </section>
   );
 }
-
-
