@@ -101,7 +101,7 @@ export function HeroSection({ onScrollTo }: HeroSectionProps) {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.7, duration: 0.6 }}
-            className="flex gap-10 pt-1"
+            className="flex gap-6 sm:gap-10 pt-1"
           >
             {[
               { value: "4+", label: "Projects Built" },
@@ -122,14 +122,13 @@ export function HeroSection({ onScrollTo }: HeroSectionProps) {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 0.6, duration: 1 }}
-        className="relative z-0 flex-1 w-full -mt-20"
-        style={{ minHeight: "460px" }}
+        className="relative z-0 flex-1 w-full -mt-20 min-h-[280px] sm:min-h-[460px]"
       >
         <NodeNetwork onNodeClick={onScrollTo} />
       </motion.div>
 
       {/* Bottom hint label */}
-      <div className="absolute bottom-5 right-6 z-10 text-xs text-muted-foreground/40 font-mono pointer-events-none">
+      <div className="hidden sm:block absolute bottom-5 right-6 z-10 text-xs text-muted-foreground/40 font-mono pointer-events-none">
         click nodes to navigate
       </div>
     </section>

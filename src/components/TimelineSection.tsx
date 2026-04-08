@@ -99,7 +99,7 @@ export function TimelineSection() {
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.97 }}
             transition={{ duration: 0.35, ease: "easeInOut" }}
-            className="fixed inset-0 flex items-center justify-center pointer-events-none z-[45]"
+            className="hidden md:fixed md:flex inset-0 items-center justify-center pointer-events-none z-[45]"
           >
             {/* Shift image toward correct side without pushing it to the corner */}
             <div style={{ transform: `translateX(${hoveredEvent.imageOn === "right" ? hoveredEvent.imageShift : `-${hoveredEvent.imageShift}`})` }}>
@@ -126,7 +126,7 @@ export function TimelineSection() {
           <p className="text-sm font-semibold text-primary uppercase tracking-widest mb-3">
             Journey
           </p>
-          <h2 className="text-4xl font-bold tracking-tight text-foreground mb-4">
+          <h2 className="text-3xl sm:text-4xl font-bold tracking-tight text-foreground mb-4">
             Timeline
           </h2>
           <p className="text-muted-foreground text-lg max-w-xl">
@@ -167,7 +167,7 @@ export function TimelineSection() {
                   whileInView={{ opacity: 1, x: 0 }}
                   viewport={{ once: true }}
                   transition={{ delay: i * 0.1, duration: 0.5 }}
-                  className={`relative flex md:justify-${isLeft ? "start" : "end"} pb-10`}
+                  className={isLeft ? "relative flex md:justify-start pb-10" : "relative flex md:justify-end pb-10"}
                 >
                   {/* Connector dot */}
                   <div

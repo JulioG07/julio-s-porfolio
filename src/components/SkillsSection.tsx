@@ -101,7 +101,7 @@ export function SkillsSection() {
           <p className="text-sm font-semibold text-primary uppercase tracking-widest mb-3">
             Capabilities
           </p>
-          <h2 className="text-4xl font-bold tracking-tight text-foreground mb-4">
+          <h2 className="text-3xl sm:text-4xl font-bold tracking-tight text-foreground mb-4">
             Skills & Highlights
           </h2>
           <p className="text-muted-foreground text-lg max-w-xl">

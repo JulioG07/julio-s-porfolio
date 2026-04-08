@@ -172,7 +172,7 @@ export function ProjectsSection() {
           <p className="text-sm font-semibold text-primary uppercase tracking-widest mb-3">
             Work
           </p>
-          <h2 className="text-4xl font-bold tracking-tight text-foreground mb-4">
+          <h2 className="text-3xl sm:text-4xl font-bold tracking-tight text-foreground mb-4">
             Featured Projects
           </h2>
           <p className="text-muted-foreground text-lg max-w-xl">
@@ -192,9 +192,9 @@ export function ProjectsSection() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.7 }}
-            className="flex-shrink-0"
+            className="flex-shrink-0 w-full lg:w-auto"
           >
-            <div ref={containerRef} className="relative" style={{ height: "480px", width: "360px" }} onMouseMove={handleContainerMouseMove}>
+            <div ref={containerRef} className="relative mx-auto" style={{ height: "480px", width: "360px", maxWidth: "100%" }} onMouseMove={handleContainerMouseMove}>
               <DisplayCards cards={displayCards} />
             </div>
             <p className="text-xs text-muted-foreground/50 mt-3 font-mono text-center">
@@ -204,7 +204,7 @@ export function ProjectsSection() {
 
           {/* Right — project detail panel */}
           <div
-            className="flex-1 min-h-[400px] flex items-center pl-10 lg:pl-14"
+            className="flex-1 min-h-[300px] lg:min-h-[400px] flex items-center pt-4 lg:pt-0 pl-0 lg:pl-14"
           >
             <AnimatePresence mode="wait">
               {activeProject ? (
