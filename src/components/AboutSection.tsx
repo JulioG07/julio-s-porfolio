@@ -14,7 +14,7 @@ const blocks = [
     label: "What I'm Building",
     color: "secondary",
     content:
-      "Right now I'm exploring AI tooling, prompt engineering, and creative coding. I'm focused on building projects that demonstrate product thinking — from IoT systems that bridge physical and digital worlds, to AI-powered apps that feel delightfully useful. Every project is a chance to learn systems thinking.",
+      "Right now I'm exploring AI tooling, prompt engineering, and creative coding. I'm focused on building projects that demonstrate product thinking — from IoT systems that bridge physical and digital worlds, to AI-powered apps that feel delightfully useful.",
   },
   {
     icon: Heart,

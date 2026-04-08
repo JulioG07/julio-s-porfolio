@@ -6,7 +6,9 @@ import logoLehigh from "@/assets/logo-lehigh.png";
 import logoBmhs from "@/assets/logo-bmhs.jpg";
 import logoTrackside from "@/assets/logo-trackside.png";
 import logoDurango from "@/assets/logo-durango.jpg";
+import eventoAiImg from "@/assets/evento-ai.jpeg";
 
+// imageOn: which side the overlay image appears — always opposite the text card
 const events = [
   {
     year: "2026",
@@ -17,6 +19,8 @@ const events = [
     color: "primary",
     logo: logoSeo,
     logoSize: "w-[32vw] max-w-sm",
+    imageOn: "right" as const,
+    imageShift: "18vw",
   },
   {
     year: "2025",
@@ -25,8 +29,10 @@ const events = [
       "Built Evento-AI in 24 hours at a hackathon sponsored by AWS & Lehigh CSBA — a serverless app using Gemini AI and AWS Lambda to convert GroupMe messages into Google Calendar events.",
     icon: Trophy,
     color: "secondary",
-    logo: logoLehigh,
-    logoSize: "w-[65vw] max-w-4xl",
+    logo: eventoAiImg,
+    logoSize: "w-[38vw] max-w-xl",
+    imageOn: "left" as const,
+    imageShift: "18vw",
   },
   {
     year: "2025",
@@ -37,6 +43,8 @@ const events = [
     color: "primary",
     logo: logoLehigh,
     logoSize: "w-[65vw] max-w-4xl",
+    imageOn: "right" as const,
+    imageShift: "21vw",
   },
   {
     year: "2025",
@@ -47,6 +55,8 @@ const events = [
     color: "secondary",
     logo: logoBmhs,
     logoSize: "w-[34vw] max-w-lg",
+    imageOn: "left" as const,
+    imageShift: "18vw",
   },
   {
     year: "2024",
@@ -57,6 +67,8 @@ const events = [
     color: "primary",
     logo: logoTrackside,
     logoSize: "w-[68vw] max-w-4xl",
+    imageOn: "right" as const,
+    imageShift: "21vw",
   },
   {
     year: "2023–Present",
@@ -67,6 +79,8 @@ const events = [
     color: "secondary",
     logo: logoDurango,
     logoSize: "w-[68vw] max-w-4xl",
+    imageOn: "left" as const,
+    imageShift: "25vw",
   },
 ];
 
@@ -87,12 +101,15 @@ export function TimelineSection() {
             transition={{ duration: 0.35, ease: "easeInOut" }}
             className="fixed inset-0 flex items-center justify-center pointer-events-none z-[45]"
           >
-            <img
-              src={hoveredEvent.logo}
-              alt=""
-              className={`${hoveredEvent.logoSize} object-contain select-none`}
-              style={{ opacity: 0.42, filter: "grayscale(20%)" }}
-            />
+            {/* Shift image toward correct side without pushing it to the corner */}
+            <div style={{ transform: `translateX(${hoveredEvent.imageOn === "right" ? hoveredEvent.imageShift : `-${hoveredEvent.imageShift}`})` }}>
+              <img
+                src={hoveredEvent.logo}
+                alt=""
+                className={`${hoveredEvent.logoSize} object-contain select-none`}
+                style={{ opacity: 0.42, filter: "grayscale(20%)" }}
+              />
+            </div>
           </motion.div>
         )}
       </AnimatePresence>
